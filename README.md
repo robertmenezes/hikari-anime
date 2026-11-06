@@ -2,14 +2,17 @@
 
 Plugin de providers de anime para o **Nuvio**, com foco em uma seleção enxuta de fontes e qualidade de vídeo.
 
-## Providers
+## Provider disponível
 
 | Provider | Conteúdo | Qualidade |
 | --- | --- | --- |
 | AniZone | Filmes e séries de anime | Exclusivamente 1080p |
-| Tomato | Séries de anime | Exclusivamente 1080p |
 
-As opções de áudio disponíveis em cada fonte são preservadas. Streams sem identificação confiável de 1080p são descartadas.
+As opções de áudio disponíveis na fonte são preservadas. Streams sem identificação confiável de 1080p são descartadas.
+
+## Provider planejado
+
+O Tomato permanece planejado, mas não está incluído no manifest nesta versão. O scraper upstream consultado contém um JWT Bearer fixo associado a uma conta. Esse token não foi copiado para este repositório. A integração será retomada quando houver um método de autenticação apropriado que não dependa da reutilização de credenciais de terceiros.
 
 ## Instalação no Nuvio
 
@@ -19,7 +22,9 @@ As opções de áudio disponíveis em cada fonte são preservadas. Streams sem i
 
    `https://raw.githubusercontent.com/robertmenezes/hikari-anime/main/manifest.json`
 
-4. Atualize a lista e habilite AniZone e/ou Tomato.
+4. Atualize a lista e habilite AniZone.
+
+> O repositório está privado durante a preparação. O Nuvio não consegue buscar o manifest de um repositório privado sem autenticação; antes da instalação, será necessário publicar o repositório ou hospedar o manifest em um endereço acessível ao app.
 
 ## Estrutura
 
@@ -28,23 +33,21 @@ As opções de áudio disponíveis em cada fonte são preservadas. Streams sem i
 ├── manifest.json
 ├── README.md
 └── providers
-    ├── anizone.js
-    └── tomato.js
+    └── anizone.js
 ```
 
 ## Origem e atribuição
 
-Os arquivos de provider desta versão foram adaptados a partir de:
+O provider AniZone desta versão foi adaptado a partir de:
 
 - [Kamirama-Plugin — AniZone](https://github.com/kaminarizz/Kamirama-Plugin/blob/main/providers/anizone.js)
-- [Kamirama-Plugin — Tomato](https://github.com/kaminarizz/Kamirama-Plugin/blob/main/providers/tomato.js)
 
-O upstream consultado não continha um arquivo `LICENSE` na data da preparação desta cópia. Este README registra a origem dos arquivos; não concede permissões adicionais nem declara uma licença para código de terceiros.
+O repositório upstream consultado não continha um arquivo `LICENSE` na data da preparação desta cópia. Este README registra a origem do arquivo; não concede permissões adicionais nem declara uma licença para código de terceiros.
 
 ## Observações técnicas
 
-- O filtro do AniZone exige que a maior resolução anunciada pela playlist seja exatamente 1080p.
-- O Tomato aceita o identificador `FHD` e resoluções explicitamente reconhecidas como 1080p; o rótulo genérico `HD` não é tratado como Full HD.
-- O filtro é intencionalmente restritivo: fontes sem informação suficiente de resolução não são exibidas.
+- O AniZone só aceita uma playlist cuja maior resolução anunciada seja exatamente 1080p.
+- Streams sem resolução identificável ou acima de 1080p são descartadas.
+- O filtro é intencionalmente restritivo. A playlist HLS ainda precisa ser testada no Nuvio para verificar como o player escolhe as variantes internas.
 
-O Hikari Anime não hospeda vídeos ou arquivos de mídia. Os providers consultam fontes de terceiros; utilize-os de acordo com as leis e os termos aplicáveis.
+O Hikari Anime não hospeda vídeos ou arquivos de mídia. O provider consulta fontes de terceiros; utilize-o de acordo com as leis e os termos aplicáveis.
