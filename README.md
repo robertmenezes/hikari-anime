@@ -19,6 +19,8 @@ Se o repositório já estiver instalado, atualize/force a atualização do repos
 
 **AniZone:** a indicação `Multi` se refere exclusivamente a múltiplas faixas de áudio identificadas na playlist. Ela não informa a disponibilidade de legendas. Legendas fornecidas separadamente pela fonte são repassadas ao Nuvio quando disponíveis; legendas embutidas no próprio vídeo não são detectadas pelo formatter.
 
+**AniZone — identificação de áudio:** uma faixa é apresentada pelo código do idioma; duas faixas são identificadas como `DUAL`; três ou mais como `Multi`. Esses rótulos descrevem somente as faixas de áudio declaradas pela playlist, não a disponibilidade de legendas.
+
 ## Comportamento
 
 - Os scrapers mantêm a estrutura e o formatter de saída do Kamirama.
