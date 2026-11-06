@@ -25,7 +25,7 @@ O repositório está público e o manifest pode ser acessado diretamente pelo Nu
 
 ## Tomato: autenticação
 
-O Tomato requer um token de acesso. O token não é armazenado no código versionado. Abra as configurações do provider Tomato no Nuvio e cole em `Token de acesso` o JWT da implementação original do Tomato que você tem autorização para utilizar. O valor é lido de `SCRAPER_SETTINGS.tomatoToken` e salvo localmente pelo Nuvio. O campo é exibido como texto normal, portanto não compartilhe capturas de tela que mostrem o valor.
+O Tomato usa automaticamente o token fixo da implementação upstream, declarado na constante `At` do arquivo `providers/tomato.js`. Não é necessário cadastrar token nas configurações do Nuvio. Nesta preparação, a constante está vazia: copie manualmente o valor de `At` do arquivo upstream para essa constante antes de testar. O token ficará visível no código-fonte deste repositório público.
 
 A interface atual do Nuvio apresenta campos do tipo texto sem aplicar mascaramento visual ao valor; evite compartilhar capturas de tela das configurações.
 
