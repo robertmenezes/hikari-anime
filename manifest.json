@@ -1,6 +1,6 @@
 {
   "name": "Hikari Anime",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "AniZone e Tomato para Nuvio, preservando os scrapers originais e filtrando os resultados para 1080p.",
   "author": "robertmenezes",
   "scrapers": [
@@ -8,7 +8,7 @@
       "id": "anizone",
       "name": "AniZone",
       "description": "Anime (séries e filmes) • Scraper original • Somente resultados identificados em 1080p.",
-      "version": "0.2.7",
+      "version": "0.2.8",
       "filename": "providers/anizone.js",
       "supportedTypes": [
         "movie",
