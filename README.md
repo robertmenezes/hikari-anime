@@ -29,6 +29,17 @@ O Tomato requer um token de acesso. Por segurança, o token fixo encontrado no c
 
 A interface atual do Nuvio apresenta campos do tipo texto sem aplicar mascaramento visual ao valor; evite compartilhar capturas de tela das configurações.
 
+## Formatação dos streams
+
+A apresentação segue um estilo compacto inspirado nos formatters do AIOStreams:
+
+- `💿 FHD` identifica a resolução 1080p.
+- `🎧 MULTI` aparece quando o AniZone anuncia mais de uma faixa de áudio.
+- Idiomas são apresentados com bandeiras e códigos, por exemplo `🇧🇷 PT` e `🇯🇵 JA`.
+- O Tomato indica a faixa correspondente à versão dublada ou legendada.
+
+Não exibimos bitrate, codec, canais de áudio ou tamanho quando a fonte não fornece esses dados de forma confiável.
+
 ## Como a restrição a 1080p funciona
 
 - **AniZone:** o scraper procura uma variante HLS cuja resolução declarada seja exatamente 1080p e entrega essa variante ao player, em vez da playlist master adaptativa. Se não houver variante identificada em 1080p, não retorna stream.
