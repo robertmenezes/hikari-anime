@@ -25,7 +25,7 @@ O repositório está público e o manifest pode ser acessado diretamente pelo Nu
 
 ## Tomato: autenticação
 
-O Tomato requer um token de acesso. Por segurança, o token fixo encontrado no código upstream não é armazenado neste repositório. Abra as configurações do provider Tomato no Nuvio e informe um token que você esteja autorizado a utilizar. O valor é lido de `SCRAPER_SETTINGS.tomatoToken`; ele não é incluído nos arquivos versionados do Hikari Anime.
+O Tomato requer um token de acesso. O token não é armazenado no código versionado. Abra as configurações do provider Tomato no Nuvio e cole em `Token de acesso` o JWT da implementação original do Tomato que você tem autorização para utilizar. O valor é lido de `SCRAPER_SETTINGS.tomatoToken` e salvo localmente pelo Nuvio. O campo é exibido como texto normal, portanto não compartilhe capturas de tela que mostrem o valor.
 
 A interface atual do Nuvio apresenta campos do tipo texto sem aplicar mascaramento visual ao valor; evite compartilhar capturas de tela das configurações.
 
@@ -42,7 +42,7 @@ Não exibimos bitrate, codec, canais de áudio ou tamanho quando a fonte não fo
 
 ## Como a restrição a 1080p funciona
 
-- **AniZone:** o scraper procura uma variante HLS cuja resolução declarada seja exatamente 1080p e entrega essa variante ao player, em vez da playlist master adaptativa. Se não houver variante identificada em 1080p, não retorna stream.
+- **AniZone:** o scraper exige que a playlist master anuncie uma variante de 1080p e entrega a playlist master ao player para preservar os grupos de áudio. O player continua responsável pela seleção adaptativa da variante.
 - **Tomato:** aceita o identificador `FHD` e outras qualidades explicitamente reconhecidas como 1080p. O rótulo genérico `HD` não é tratado como Full HD.
 - Streams sem resolução confiável ou em outras resoluções são descartadas.
 
