@@ -21,7 +21,7 @@ As opções de áudio originais de cada provider são preservadas. Não há fall
 
 4. Atualize a lista e habilite AniZone e/ou Tomato.
 
-O repositório está privado durante a preparação; para instalar diretamente pelo Nuvio, o manifest precisará estar acessível ao aplicativo.
+O repositório está público e o manifest pode ser acessado diretamente pelo Nuvio.
 
 ## Tomato: autenticação
 
