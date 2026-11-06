@@ -17,6 +17,8 @@ Adicione este manifest na área de plugins:
 
 Se o repositório já estiver instalado, atualize/force a atualização do repositório para buscar a nova versão dos providers.
 
+**AniZone:** a indicação `Multi` se refere exclusivamente a múltiplas faixas de áudio identificadas na playlist. Ela não informa a disponibilidade de legendas. Legendas fornecidas separadamente pela fonte são repassadas ao Nuvio quando disponíveis; legendas embutidas no próprio vídeo não são detectadas pelo formatter.
+
 ## Comportamento
 
 - Os scrapers mantêm a estrutura e o formatter de saída do Kamirama.
