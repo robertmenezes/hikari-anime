@@ -1,6 +1,6 @@
 {
   "name": "Hikari Anime",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Providers de anime para Nuvio: AniZone e Tomato, com streams exclusivamente em 1080p.",
   "author": "robertmenezes",
   "scrapers": [
@@ -8,7 +8,7 @@
       "id": "anizone",
       "name": "AniZone",
       "description": "Anime (séries e filmes) • Variante HLS identificada em 1080p • Áudio conforme as faixas disponíveis.",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "filename": "providers/anizone.js",
       "supportedTypes": [
         "movie",
@@ -30,7 +30,7 @@
       "id": "tomato",
       "name": "Tomato",
       "description": "Anime (séries) • Streams identificadas exclusivamente em 1080p • Áudio dublado ou legendado, conforme a temporada.",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "filename": "providers/tomato.js",
       "supportedTypes": [
         "tv"
