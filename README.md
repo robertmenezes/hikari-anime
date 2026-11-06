@@ -27,18 +27,7 @@ O repositório está público e o manifest pode ser acessado diretamente pelo Nu
 
 O Tomato usa automaticamente o token fixo da implementação upstream, declarado na constante `At` do arquivo `providers/tomato.js`. Não é necessário cadastrar token nas configurações do Nuvio. Nesta preparação, a constante está vazia: copie manualmente o valor de `At` do arquivo upstream para essa constante antes de testar. O token ficará visível no código-fonte deste repositório público.
 
-A interface atual do Nuvio apresenta campos do tipo texto sem aplicar mascaramento visual ao valor; evite compartilhar capturas de tela das configurações.
-
 ## Formatação dos streams
-
-A apresentação segue um estilo compacto inspirado nos formatters do AIOStreams:
-
-- `💿 FHD` identifica a resolução 1080p.
-- `🎧 MULTI` aparece quando o AniZone anuncia mais de uma faixa de áudio.
-- Idiomas são apresentados com bandeiras e códigos, por exemplo `🇧🇷 PT` e `🇯🇵 JA`.
-- O Tomato indica a faixa correspondente à versão dublada ou legendada.
-
-Não exibimos bitrate, codec, canais de áudio ou tamanho quando a fonte não fornece esses dados de forma confiável.
 
 ## Como a restrição a 1080p funciona
 
