@@ -27,27 +27,6 @@
       "supportsExternalPlayer": true
     },
     {
-      "id": "tomato",
-      "name": "Tomato",
-      "description": "Anime (séries) • Scraper original • Somente resultados identificados em 1080p.",
-      "version": "0.2.7",
-      "filename": "providers/tomato.js",
-      "supportedTypes": [
-        "tv"
-      ],
-      "enabled": true,
-      "contentLanguage": [
-        "pt-BR",
-        "ja"
-      ],
-      "formats": [
-        "mp4",
-        "hls"
-      ],
-      "hasSettings": true,
-      "supportsExternalPlayer": true
-    },
-    {
       "id": "berryanimes",
       "name": "Berry Animes",
       "description": "Anime (séries) • Somente 1080p • Multiáudio e legendas externas quando disponíveis.",
@@ -67,6 +46,27 @@
       ],
       "hasSettings": true,
       "supportsExternalPlayer": false
+    },
+    {
+      "id": "tomato",
+      "name": "Tomato",
+      "description": "Anime (séries) • Scraper original • Somente resultados identificados em 1080p.",
+      "version": "0.2.7",
+      "filename": "providers/tomato.js",
+      "supportedTypes": [
+        "tv"
+      ],
+      "enabled": true,
+      "contentLanguage": [
+        "pt-BR",
+        "ja"
+      ],
+      "formats": [
+        "mp4",
+        "hls"
+      ],
+      "hasSettings": true,
+      "supportsExternalPlayer": true
     }
   ]
 }
