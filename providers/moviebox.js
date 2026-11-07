@@ -1107,7 +1107,8 @@ function buildPlaybackHeaders(stream, mode, route) {
   }
 
   const cookie = stream && (stream.signCookie || stream.sign_cookie || stream.cookie);
-  const headerKey = stream && (stream.signHeaderKey || stream.sign_header_key) || 'Cookie';
+  // MovieBox expects the signed token header as well as Cookie.
+  const headerKey = stream && (stream.signHeaderKey || stream.sign_header_key) || 'X-MB-Token';
   if (cookie) {
     headers[headerKey] = String(cookie);
     headers.Cookie = String(cookie);
@@ -1233,6 +1234,14 @@ async function getMobileVariantStreams(variant, meta, mediaType, season, episode
   }
 
   const streams = collectMobileStreams(playResponse.data, subjectData, season, episode);
+  // The subject detail response carries the Web Player route used to mint
+  // signed CDN URLs. Reuse it for playback instead of sending an API-only
+  // Referer, which can leave otherwise valid movie streams buffering.
+  const mobileRoute = h5RouteFromItem(subjectData || {}) || {
+    origin: H5_ORIGIN,
+    detailPath: '',
+    subjectId: variant.id
+  };
   const results = await Promise.all(streams.map(async function (stream) {
     const streamId = streamIdOf(stream, variant.id + '|' + season + '|' + episode);
     const captions = await getExternalCaptions(variant.id, streamId, episode);
@@ -1244,8 +1253,8 @@ async function getMobileVariantStreams(variant, meta, mediaType, season, episode
       mediaType,
       season,
       episode,
-      'mobile',
-      { origin: API_HOSTS[0], detailPath: '', subjectId: variant.id },
+      'h5',
+      mobileRoute,
       captions
     );
   }));
