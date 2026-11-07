@@ -17,11 +17,11 @@ Adicione este manifest na área de plugins:
 
 Se o repositório já estiver instalado, atualize/force a atualização do repositório para buscar a nova versão dos providers.
 
-**AniZone:** a indicação `Multi` se refere exclusivamente a múltiplas faixas de áudio identificadas na playlist. Ela não informa a disponibilidade de legendas. Legendas fornecidas separadamente pela fonte são repassadas ao Nuvio quando disponíveis; legendas embutidas no próprio vídeo não são detectadas pelo formatter.
+**AniZone:** a indicação `Multi` se refere exclusivamente a múltiplas faixas de áudio identificadas na playlist. Quando o player da fonte fornece uma faixa de legenda em português e não há áudio em português, o resultado também recebe a indicação `Legendado`. As faixas de legenda separadas são repassadas ao Nuvio para seleção no player.
 
 **AniZone — identificação de áudio:** uma faixa é apresentada pelo código do idioma; duas faixas são identificadas como `DUAL`; três ou mais como `Multi`. Esses rótulos descrevem somente as faixas de áudio declaradas pela playlist, não a disponibilidade de legendas.
 
-O AniZone também lê idiomas anunciados pela playlist HLS em `TYPE=SUBTITLES` e `TYPE=CLOSED-CAPTIONS` e os mostra separadamente como `Legendas: ...`. Isso é apenas informação de catálogo: o Nuvio continua usando as faixas nativas da playlist durante a reprodução. Se a playlist não declarar o idioma, ele não será inferido.
+O AniZone também reconhece idiomas anunciados pela playlist HLS em `TYPE=SUBTITLES` e `TYPE=CLOSED-CAPTIONS`. A indicação `Legendado` no cartão é baseada na presença de uma faixa de legenda em português fornecida separadamente pelo player da fonte ou declarada na playlist, e na ausência de áudio em português.
 
 ## Comportamento
 
