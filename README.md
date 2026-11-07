@@ -25,7 +25,7 @@ AniZone e Berry Animes usam o formato compacto Hikari:
 ```text
 [Hikari] 1080p • AniZone
 Daemons of the Shadow Realm - S01E01
-Áudio: Japonês (Original), Português (Brasil), Espanhol, +6 idiomas | Legendas: Português (Brasil), Espanhol, +9 idiomas
+Áudio: Japonês, Português (BR), Espanhol (Latino), +6 idiomas | Legendas: Português (BR), Espanhol (Latino), +9 idiomas
 ```
 
 Os idiomas são priorizados para o público latino-americano:
@@ -33,7 +33,7 @@ Os idiomas são priorizados para o público latino-americano:
 - **Áudio:** idioma original primeiro, depois português e espanhol. Outros idiomas são agrupados como `+N idiomas`.
 - **Legendas:** português e espanhol primeiro. Outras legendas são agrupadas como `+N idiomas`.
 - Os nomes e rótulos são apresentados em português.
-- Regiões identificadas são preservadas: `pt-BR` como Português (Brasil), `pt-PT` como Português (Portugal) e `pt` genérico como Português.
+- Regiões identificadas são preservadas: `pt-BR` como Português (BR), `pt-PT` e `pt` genérico como Português, e `es-419` como Espanhol (Latino). O idioma original aparece primeiro na lista de áudio, sem marcador adicional.
 
 ## AniZone
 
