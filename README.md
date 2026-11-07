@@ -56,7 +56,10 @@ Os providers também:
 - Preservam a URL, o idioma e os dados de assinatura de cada variante; URLs iguais não são descartadas quando representam áudios diferentes.
 - Reconhecem cookies de assinatura, incluindo Edge-Cache-Cookie e políticas CloudFront, e encaminham Cookie, X-MB-Token, Origin, Referer e User-Agent ao player conforme a fonte.
 - Consultam legendas externas pela API móvel e as entregam ao Nuvio quando disponíveis.
-- Ordenam as fontes por qualidade e destacam o idioma no nome do cartão.
+- Ordenam as fontes por qualidade e destacam o idioma real de cada variante no nome do cartão.
+- Cada resultado da API móvel representa uma variante de áudio: o idioma da variante tem prioridade sobre a indicação genérica `Multi` do manifesto HLS/DASH.
+- Não assumem áudio original quando o Web Player não informa o idioma; nesses casos, o cartão indica idioma não identificado.
+- A descrição de legendas é independente da faixa de áudio e só aparece quando há legendas externas identificadas.
 
 ### Diferenças regionais
 
@@ -70,7 +73,7 @@ A lista de formatos no manifesto descreve os formatos que o provider consegue id
 ## Comportamento geral
 
 - AniZone, Berry Animes e Tomato mantêm o filtro estrito de 1080p.
-- MovieBox e MovieBox IN não aplicam o filtro de 1080p: entregam as qualidades encontradas em ordem decrescente.
+- MovieBox e MovieBox IN não aplicam o filtro de 1080p: entregam as qualidades encontradas em ordem decrescente. Cada cartão identifica a variante de áudio correspondente, sem confundir áudio multifaixa do contêiner com o idioma da fonte.
 - As faixas de áudio e as legendas externas identificadas são apresentadas ao Nuvio para seleção durante a reprodução.
 
 ## Estrutura

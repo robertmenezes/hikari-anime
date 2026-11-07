@@ -778,10 +778,6 @@ function collectAudioLanguages(stream, fallbackLanguage, subjectData) {
   if (!hasTrackLanguage) {
     if (fallbackLanguage && String(fallbackLanguage).toLowerCase() !== 'unknown') {
       values.push(fallbackLanguage);
-    } else if (subjectData && subjectData.originalLanguageName) {
-      values.push(subjectData.originalLanguageName);
-    } else if (subjectData && subjectData.originalLanguage) {
-      values.push(subjectData.originalLanguage);
     }
   }
 
@@ -1094,7 +1090,18 @@ function buildPlaybackHeaders(stream, mode, route) {
 }
 
 function streamLanguages(stream, variant, subjectData) {
-  const audio = collectAudioLanguages(stream, variant && variant.language, subjectData);
+  // MovieBox returns one subject ID per dub. The variant label is authoritative:
+  // HLS/DASH may report "Multi" for the container even though this source is
+  // a single-language dub.
+  const variantLanguage = variant && String(variant.language || '').trim();
+  if (variantLanguage && !/^(multi|multiple|unknown|und|n\/?a)$/i.test(variantLanguage)) {
+    return languageLabel(variantLanguage);
+  }
+
+  const audio = collectAudioLanguages(stream, '', null)
+    .filter(function (value) {
+      return !/^(multi|multiple|unknown|und|n\/?a)$/i.test(String(value || '').trim());
+    });
   return audio.length ? summarizeLanguages(audio, 4) : 'Não identificado';
 }
 
@@ -1128,7 +1135,7 @@ function buildResult(stream, variant, subjectData, meta, mediaType, season, epis
   );
   const audio = streamLanguages(stream, variant, subjectData);
   const audioDisplay = variant && variant.isOriginal
-    ? (audio === 'Não identificado' ? 'Áudio original' : audio + ' (Original)')
+    ? 'Áudio original'
     : audio;
   const subtitlesList = normalizeSubtitleList(
     parseSubtitleItems(stream.subtitles || stream.captions || stream.extCaptions)
@@ -1405,8 +1412,14 @@ async function playH5Subject(subject, meta, mediaType, season, episode) {
     } catch (_) {}
   }
 
-  const candidateLanguage = subject.language || subject.lanName || subject.lang || 'Original Audio';
-  const variant = { id: subjectId, language: candidateLanguage };
+  const candidateLanguage = subject.language || subject.lanName || subject.lang ||
+    subject.audioLanguage || subject.audio_language || subject.dubName || subject.dub_name || '';
+  const isOriginal = /^(original|original audio)$/i.test(String(candidateLanguage || '').trim());
+  const variant = {
+    id: subjectId,
+    language: candidateLanguage,
+    isOriginal: isOriginal
+  };
   const results = streams.map(function (stream) {
     return buildResult(
       stream,
