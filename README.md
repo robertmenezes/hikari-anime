@@ -21,6 +21,8 @@ Se o repositório já estiver instalado, atualize/force a atualização do repos
 
 **AniZone — identificação de áudio:** uma faixa é apresentada pelo código do idioma; duas faixas são identificadas como `DUAL`; três ou mais como `Multi`. Esses rótulos descrevem somente as faixas de áudio declaradas pela playlist, não a disponibilidade de legendas.
 
+O AniZone também lê idiomas anunciados pela playlist HLS em `TYPE=SUBTITLES` e `TYPE=CLOSED-CAPTIONS` e os mostra separadamente como `Legendas: ...`. Isso é apenas informação de catálogo: o Nuvio continua usando as faixas nativas da playlist durante a reprodução. Se a playlist não declarar o idioma, ele não será inferido.
+
 ## Comportamento
 
 - Os scrapers mantêm a estrutura e o formatter de saída do Kamirama.
