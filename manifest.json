@@ -1,7 +1,7 @@
 {
   "name": "Hikari Anime",
-  "version": "0.2.16",
-  "description": "AniZone, Berry Animes e Tomato para Nuvio, com cartões Hikari compactos e idiomas priorizados para o público latino.",
+  "version": "0.2.17",
+  "description": "Providers de anime e fontes gerais de filmes e séries para Nuvio, com cartões Hikari e idiomas priorizados para o público latino.",
   "author": "robertmenezes",
   "scrapers": [
     {
@@ -66,6 +66,64 @@
         "hls"
       ],
       "hasSettings": true,
+      "supportsExternalPlayer": true
+    },
+    {
+      "id": "moviebox",
+      "name": "MovieBox",
+      "description": "Filmes e séries • HLS, DASH e MP4 • Variantes de áudio e legendas externas.",
+      "version": "0.1.0",
+      "filename": "providers/moviebox.js",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "enabled": true,
+      "contentLanguage": [
+        "en",
+        "hi",
+        "pt-BR",
+        "es",
+        "zh",
+        "ja",
+        "ko"
+      ],
+      "formats": [
+        "hls",
+        "dash",
+        "mp4",
+        "mkv"
+      ],
+      "hasSettings": false,
+      "supportsExternalPlayer": true
+    },
+    {
+      "id": "movieboxin",
+      "name": "MovieBox IN",
+      "description": "Filmes e séries • Rota regional IN prioritária • Variantes de áudio e legendas externas.",
+      "version": "0.1.0",
+      "filename": "providers/movieboxin.js",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "enabled": true,
+      "contentLanguage": [
+        "en",
+        "hi",
+        "pt-BR",
+        "es",
+        "zh",
+        "ja",
+        "ko"
+      ],
+      "formats": [
+        "hls",
+        "dash",
+        "mp4",
+        "mkv"
+      ],
+      "hasSettings": false,
       "supportsExternalPlayer": true
     }
   ]

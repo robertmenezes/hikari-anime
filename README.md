@@ -1,39 +1,28 @@
 # Hikari Anime
 
-Plugin de providers de anime para o **Nuvio**, baseado nos scrapers do Kamirama, preservando a lógica original de extração sempre que possível.
+Plugin de providers para o Nuvio, com fontes de anime e fontes gerais de filmes e séries. Os providers mantêm cartões Hikari compactos e priorizam a apresentação de idiomas para o público latino-americano.
 
 ## Providers
 
-| Provider | Conteúdo | Filtro |
+| Provider | Conteúdo | Filtro / comportamento |
 | --- | --- | --- |
 | AniZone | Filmes e séries de anime | Somente 1080p com áudio ou legenda identificada em português |
 | Berry Animes | Séries de anime | Somente resultados identificados em 1080p |
 | Tomato | Séries de anime | Somente resultados identificados em 1080p |
+| MovieBox | Filmes e séries | HLS, DASH e MP4; variantes de áudio e legendas externas |
+| MovieBox IN | Filmes e séries | Mesmo fluxo de reprodução, priorizando o host regional IN |
 
 ## Instalação no Nuvio
 
-Adicione este manifest na área de plugins:
+Adicione este manifesto na área de plugins:
 
-`https://raw.githubusercontent.com/robertmenezes/hikari-anime/main/manifest.json`
+https://raw.githubusercontent.com/robertmenezes/hikari-anime/main/manifest.json
 
-Se o repositório já estiver instalado, atualize/force a atualização do repositório para buscar a nova versão dos providers.
+Se o repositório já estiver instalado, atualize/force a atualização para buscar a nova versão dos providers.
 
-## Formato dos cartões
+## Cartões e idiomas
 
-AniZone e Berry Animes usam o formato compacto Hikari:
-
-```text
-[Hikari] 1080p • AniZone
-Daemons of the Shadow Realm - S01E01
-Áudio: Japonês, Português (BR), Espanhol (Latino), +6 idiomas | Legendas: Português (BR), Espanhol (Latino), +9 idiomas
-```
-
-Os idiomas são priorizados para o público latino-americano:
-
-- **Áudio:** idioma original primeiro, depois português e espanhol. Outros idiomas são agrupados como `+N idiomas`.
-- **Legendas:** português e espanhol primeiro. Outras legendas são agrupadas como `+N idiomas`.
-- Os nomes e rótulos são apresentados em português.
-- Regiões identificadas são preservadas: `pt-BR` como Português (BR), `pt-PT` e `pt` genérico como Português, e `es-419` como Espanhol (Latino). O idioma original aparece primeiro na lista de áudio, sem marcador adicional.
+AniZone e Berry Animes usam cartões compactos Hikari, com qualidade, provider, título e informações de áudio/legendas. Os idiomas são apresentados em português sempre que identificados; português e espanhol recebem prioridade na descrição.
 
 ## AniZone
 
@@ -44,34 +33,52 @@ Os idiomas são priorizados para o público latino-americano:
 ## Berry Animes
 
 - Provider para séries, baseado no scraper do Kamirama.
-- O manifesto HLS é analisado separando faixas de áudio e legendas, reconhecendo códigos ISO 639-1 e ISO 639-2/3 (por exemplo, `ja`/`jpn`, `pt`/`por` e `es`/`spa`).
+- O manifesto HLS é analisado separando faixas de áudio e legendas, reconhecendo códigos ISO 639-1 e ISO 639-2/3.
 - As legendas externas fornecidas pela fonte são repassadas ao Nuvio.
-- A fonte utiliza uma sessão de projeto incorporada ao scraper de origem. Se a fonte começar a responder com HTTP 401/403, pode ser necessário atualizar essa sessão a partir do projeto upstream.
 - A reprodução é HLS; a compatibilidade com players externos não é anunciada pelo provider.
+
+## Tomato
+
+- Provider de séries de anime que mantém o fluxo original do scraper.
+- A autenticação é automática; não é necessário inserir token nas configurações do Nuvio.
+
+## MovieBox e MovieBox IN
+
+- Os dois providers aceitam filmes e séries e recebem do Nuvio o TMDB ID, o tipo de mídia e, para séries, temporada e episódio.
+- A pesquisa considera título, título original, tipo de conteúdo e ano para reduzir correspondências incorretas.
+- As variantes de áudio/dublagem são consultadas separadamente quando a API as disponibiliza.
+- Os resultados podem incluir HLS, DASH, MP4 ou MKV, com qualidade, cabeçalhos de reprodução e legendas externas quando disponíveis.
+- A autenticação usa a assinatura da API móvel e obtém um token anônimo durante a consulta. Não é necessário cadastrar uma chave ou token nas configurações do plugin.
+- MovieBox prioriza api3.aoneroom.com; MovieBox IN prioriza apig.inmoviebox.com. As rotas de busca e reprodução encontradas nos pacotes são praticamente iguais, então as duas variantes podem retornar alguns links idênticos. A diferença mais evidente nos pacotes originais está nas páginas de catálogo.
+- As fontes não aplicam o filtro estrito de 1080p dos providers de anime; as qualidades encontradas são entregues em ordem decrescente para que o usuário escolha.
 
 ## Comportamento geral
 
-- Os providers seguem o filtro estrito de 1080p; não há fallback para 720p, 480p ou qualidades inferiores.
-- As faixas disponíveis continuam sendo entregues ao Nuvio para seleção durante a reprodução.
-- O Tomato mantém sua autenticação automática original; não é necessário inserir token nas configurações do Nuvio.
+- AniZone, Berry Animes e Tomato mantêm o filtro estrito de 1080p.
+- MovieBox e MovieBox IN retornam as qualidades disponíveis, ordenadas da maior para a menor.
+- As faixas de áudio e as legendas externas identificadas continuam sendo entregues ao Nuvio para seleção durante a reprodução.
 
 ## Estrutura
 
-```text
+```
 .
 ├── manifest.json
 └── providers
     ├── anizone.js
     ├── berryanimes.js
+    ├── moviebox.js
+    ├── movieboxin.js
     └── tomato.js
 ```
 
-## Origem
+## Origem e referências
 
-Os providers foram adaptados dos seguintes arquivos do Kamirama:
+Os providers de anime foram adaptados dos seguintes arquivos do Kamirama:
 
-- [AniZone](https://github.com/kaminarizz/Kamirama-Plugin/blob/main/providers/anizone.js)
-- [Berry Animes](https://github.com/kaminarizz/Kamirama-Plugin/blob/main/providers/berryanimes.js)
-- [Tomato](https://github.com/kaminarizz/Kamirama-Plugin/blob/main/providers/tomato.js)
+- AniZone: https://github.com/kaminarizz/Kamirama-Plugin/blob/main/providers/anizone.js
+- Berry Animes: https://github.com/kaminarizz/Kamirama-Plugin/blob/main/providers/berryanimes.js
+- Tomato: https://github.com/kaminarizz/Kamirama-Plugin/blob/main/providers/tomato.js
+
+A integração MovieBox foi implementada para o runtime de plugins do Nuvio com base no comportamento observado nos pacotes Cloudstream fornecidos para análise e em referências públicas da API móvel. O Hikari não importa a infraestrutura do Stremio ou a do Cloudstream.
 
 O Hikari Anime não hospeda vídeos ou arquivos de mídia. Os providers consultam fontes de terceiros; utilize-os de acordo com as leis e os termos aplicáveis.
