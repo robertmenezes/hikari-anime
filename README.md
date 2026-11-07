@@ -6,7 +6,7 @@ Plugin de providers de anime para o **Nuvio**, baseado nos scrapers do Kamirama,
 
 | Provider | Conteúdo | Filtro |
 | --- | --- | --- |
-| AniZone | Filmes e séries de anime | Somente resultados identificados em 1080p |
+| AniZone | Filmes e séries de anime | Somente resultados identificados em 1080p e com áudio ou legenda em português |
 | Tomato | Séries de anime | Somente resultados identificados em 1080p |
 
 ## Instalação no Nuvio
@@ -17,17 +17,26 @@ Adicione este manifest na área de plugins:
 
 Se o repositório já estiver instalado, atualize/force a atualização do repositório para buscar a nova versão dos providers.
 
-**AniZone:** a indicação `Multi` se refere exclusivamente a múltiplas faixas de áudio identificadas na playlist. Quando o player da fonte fornece uma faixa de legenda em português e não há áudio em português, o resultado também recebe a indicação `Legendado`. As faixas de legenda separadas são repassadas ao Nuvio para seleção no player.
+## AniZone
 
-**AniZone — identificação de áudio:** uma faixa é apresentada pelo código do idioma; duas faixas são identificadas como `DUAL`; três ou mais como `Multi`. Esses rótulos descrevem somente as faixas de áudio declaradas pela playlist, não a disponibilidade de legendas.
+O cartão apresenta as informações em linhas separadas:
 
-O AniZone também reconhece idiomas anunciados pela playlist HLS em `TYPE=SUBTITLES` e `TYPE=CLOSED-CAPTIONS`. A indicação `Legendado` no cartão é baseada na presença de uma faixa de legenda em português fornecida separadamente pelo player da fonte ou declarada na playlist, e na ausência de áudio em português.
+- `AniZone · 1080p`
+- `Áudio · Japonês (Original), Português (Brasil), Espanhol`
+- `Legenda · Português (Brasil), Espanhol`
 
-## Comportamento
+Os nomes dos idiomas são exibidos em português. A indicação `(Original)` usa o idioma original informado pelo TMDB, não a ordem das faixas na playlist.
 
-- Os scrapers mantêm a estrutura e o formatter de saída do Kamirama.
+Os identificadores de português são preservados: `pt-BR` aparece como Português (Brasil), `pt-PT` como Português (Portugal) e `pt` sem região como Português. O plugin não presume que um idioma `pt` genérico seja brasileiro ou português europeu.
+
+A fonte AniZone só é retornada quando encontra pelo menos uma faixa de áudio ou legenda identificada como português. Se não encontrar português em nenhuma das duas modalidades, a fonte é ocultada dos resultados. A detecção considera as faixas de áudio e legendas declaradas no manifesto HLS, além das legendas externas fornecidas pela página do episódio.
+
+O filtro de qualidade continua estrito: somente resultados identificados em 1080p são exibidos. As faixas disponíveis continuam sendo entregues ao Nuvio para seleção durante a reprodução.
+
+## Comportamento geral
+
+- Os scrapers mantêm a estrutura de extração do Kamirama sempre que possível.
 - As opções originais de áudio são preservadas.
-- O filtro só exibe resultados cuja qualidade seja identificada como 1080p.
 - Não existe fallback para 720p, 480p ou qualidades inferiores.
 - O Tomato utiliza sua autenticação automática original; não é necessário inserir token nas configurações do Nuvio.
 
