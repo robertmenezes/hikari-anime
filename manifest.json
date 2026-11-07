@@ -7,7 +7,7 @@
     {
       "id": "anizone",
       "name": "AniZone",
-      "description": "Anime (séries e filmes) • Scraper original • Somente resultados identificados em 1080p.",
+      "description": "Anime (séries e filmes) • Somente 1080p com áudio ou legenda identificada em português.",
       "version": "0.2.12",
       "filename": "providers/anizone.js",
       "supportedTypes": [
