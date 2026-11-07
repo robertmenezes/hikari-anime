@@ -420,7 +420,7 @@ function normalizeTitle(value) {
   return text.toLowerCase()
     .replace(/\[[^\]]*\]/g, ' ')
     .replace(/\((?:19|20)\d{2}\)/g, ' ')
-    .replace(/\s+s\d+(?:\s*-\s*s?\d+)?$/i, ' ')
+    .replace(/\s+(?:s\d{1,2}(?:e\d{1,3})?|s\d{1,2}\s*-\s*s?\d{1,2}|season\s+\d+(?:\s+episode\s+\d+)?)$/i, ' ')
     .replace(/\b(?:dubbed|dub|subbed|dual audio|4k|uhd|hd)\b/g, ' ')
     .replace(/[^\w\u3400-\u9fff\uac00-\ud7af]+/g, ' ')
     .replace(/\s+/g, ' ')
@@ -501,46 +501,57 @@ function subjectIdOf(subject) {
 }
 
 async function mobileSearch(keyword, mediaType) {
-  const v1Body = JSON.stringify({
-    keyword: keyword,
-    q: keyword,
-    page: 1,
-    pageSize: 20,
-    type: 0
-  });
+  const requests = [
+    {
+      label: 'v1',
+      path: '/wefeed-mobile-bff/subject-api/search',
+      body: JSON.stringify({
+        keyword: keyword,
+        q: keyword,
+        page: 1,
+        pageSize: 20,
+        type: 0
+      }),
+      options: null
+    },
+    {
+      label: 'v2',
+      path: '/wefeed-mobile-bff/subject-api/search/v2',
+      body: JSON.stringify({
+        page: 1,
+        perPage: 20,
+        keyword: keyword,
+        restrictKid: 1
+      }),
+      options: { contentType: 'application/json; charset=utf-8' }
+    }
+  ];
 
-  try {
-    const response = await mobileRequest(
-      '/wefeed-mobile-bff/subject-api/search',
-      'POST',
-      {},
-      v1Body
-    );
-    const items = extractSubjects(response.data);
-    if (items.length) return items;
-  } catch (error) {
-    console.log('[' + PROVIDER_NAME + '] busca móvel v1 falhou: ' + (error.message || error));
+  const pooled = [];
+  const seen = new Set();
+  for (let i = 0; i < requests.length; i++) {
+    try {
+      const request = requests[i];
+      const response = await mobileRequest(
+        request.path,
+        'POST',
+        {},
+        request.body,
+        request.options
+      );
+      extractSubjects(response.data).forEach(function (subject) {
+        const id = subjectIdOf(subject);
+        const key = String(id || '') + '|' + normalizeTitle(subject && subject.title);
+        if (id && !seen.has(key)) {
+          seen.add(key);
+          pooled.push(subject);
+        }
+      });
+    } catch (error) {
+      console.log('[' + PROVIDER_NAME + '] busca móvel ' + requests[i].label + ' falhou: ' + (error.message || error));
+    }
   }
-
-  try {
-    const v2Body = JSON.stringify({
-      page: 1,
-      perPage: 20,
-      keyword: keyword,
-      restrictKid: 1
-    });
-    const response = await mobileRequest(
-      '/wefeed-mobile-bff/subject-api/search/v2',
-      'POST',
-      {},
-      v2Body,
-      { contentType: 'application/json; charset=utf-8' }
-    );
-    return extractSubjects(response.data);
-  } catch (error) {
-    console.log('[' + PROVIDER_NAME + '] busca móvel v2 falhou: ' + (error.message || error));
-    return [];
-  }
+  return pooled;
 }
 
 async function findMobileMatches(meta, mediaType, titles) {
@@ -1321,7 +1332,7 @@ function h5RouteFromItem(item) {
 }
 
 function h5BaseTitle(value) {
-  return String(value || '').split('[')[0].trim().replace(/\s+S\d+(?:\s*-\s*S?\d+)?$/i, '');
+  return String(value || '').split('[')[0].trim().replace(/\s+(?:S\d{1,2}(?:E\d{1,3})?|S\d{1,2}\s*-\s*S?\d{1,2}|Season\s+\d+(?:\s+Episode\s+\d+)?)$/i, '');
 }
 
 function h5ItemSeason(item) {
