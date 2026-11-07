@@ -1,6 +1,6 @@
 {
   "name": "Hikari Anime",
-  "version": "0.2.22",
+  "version": "0.2.23",
   "description": "Providers de anime e fontes gerais de filmes e séries para Nuvio, com suporte a múltiplas faixas de áudio, legendas e fallback de reprodução.",
   "author": "robertmenezes",
   "scrapers": [
@@ -71,8 +71,8 @@
     {
       "id": "moviebox",
       "name": "MovieBox",
-      "description": "Global • variantes completas e metadados de áudio no formato de diagnóstico.",
-      "version": "0.2.4",
+      "description": "Global • fontes separadas por idioma, com metadados de áudio e legendas.",
+      "version": "0.2.5",
       "filename": "providers/moviebox.js",
       "supportedTypes": [
         "movie",
@@ -100,7 +100,7 @@
     {
       "id": "movieboxin",
       "name": "MovieBox IN",
-      "description": "Regional IN • variantes completas e metadados de áudio no formato de diagnóstico.",
+      "description": "Regional IN • fontes separadas por idioma, com metadados de áudio e legendas.",
       "version": "0.2.4",
       "filename": "providers/movieboxin.js",
       "supportedTypes": [
