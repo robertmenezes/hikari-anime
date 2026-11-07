@@ -41,7 +41,7 @@ AniZone e Berry Animes usam cartões compactos Hikari, com qualidade, provider, 
 - Provider de séries de anime que mantém o fluxo original do scraper.
 - A autenticação é automática; não é necessário inserir token nas configurações do Nuvio.
 
-## MovieBox e MovieBox IN
+## MovieBox e MovieBox IN consultam todas as variantes encontradas nas buscas móvel e Web Player, preservam os rótulos de áudio fornecidos por cada variante e exibem metadados em formato de diagnóstico inspirado no CNCVerse.
 
 A implementação foi reestruturada para usar duas rotas de descoberta e reprodução:
 
@@ -73,7 +73,7 @@ A lista de formatos no manifesto descreve os formatos que o provider consegue id
 ## Comportamento geral
 
 - AniZone, Berry Animes e Tomato mantêm o filtro estrito de 1080p.
-- MovieBox e MovieBox IN não aplicam o filtro de 1080p: entregam as qualidades encontradas em ordem decrescente. Cada cartão identifica a variante de áudio correspondente, sem confundir áudio multifaixa do contêiner com o idioma da fonte.
+- MovieBox e MovieBox IN consultam todas as variantes encontradas nas buscas móvel e Web Player, preservam os rótulos de áudio fornecidos por cada variante e exibem metadados em formato de diagnóstico inspirado no CNCVerse.
 - As faixas de áudio e as legendas externas identificadas são apresentadas ao Nuvio para seleção durante a reprodução.
 
 ## Estrutura

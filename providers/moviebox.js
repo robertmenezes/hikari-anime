@@ -545,7 +545,7 @@ async function mobileSearch(keyword, mediaType) {
 
 async function findMobileMatches(meta, mediaType, titles) {
   const collected = new Map();
-  const queries = titles.slice(0, 3);
+  const queries = titles;
 
   for (let i = 0; i < queries.length; i++) {
     const items = await mobileSearch(queries[i], mediaType);
@@ -559,12 +559,10 @@ async function findMobileMatches(meta, mediaType, titles) {
         collected.set(key, { subject: subject, score: score });
       }
     });
-    if (collected.size >= 3) break;
   }
 
   return Array.from(collected.values())
     .sort(function (a, b) { return b.score - a.score; })
-    .slice(0, 3)
     .map(function (entry) { return entry.subject; });
 }
 
@@ -582,28 +580,50 @@ async function getMobileSubjectDetails(subjectId) {
   return getSubjectData(response);
 }
 
-function getDubs(subjectData, originalSubjectId) {
+function dubLanguageOf(dub) {
+  if (!dub || typeof dub !== 'object') return '';
+  const raw = String(
+    dub.lanName || dub.language || dub.lan || dub.audioName || dub.audio_name ||
+    dub.dubName || dub.dub_name || dub.name || dub.title || ''
+  ).trim();
+  if (!raw) return '';
+  const key = raw.toLowerCase().replace(/[_\s-]+/g, '');
+  if (/^(ptbr|porbr|brazilianportuguese|portuguesebrazil)$/.test(key)) return 'pt-BR';
+  if (/^(esla|es419|latinspanish|spanishlatinamerica)$/.test(key)) return 'es-419';
+  if (/^(original|originalaudio)$/.test(key)) return 'Original Audio';
+  return raw;
+}
+
+function getDubs(subjectData, originalSubjectId, originalSubject) {
   const dubs = Array.isArray(subjectData && subjectData.dubs) ? subjectData.dubs : [];
   const original = dubs.find(function (dub) {
     return String(dub.subjectId || dub.subject_id || dub.id || '') === String(originalSubjectId);
   });
+  const parentLanguage = dubLanguageOf(originalSubject) ||
+    dubLanguageOf(original) ||
+    dubLanguageOf({
+      language: subjectData && (subjectData.originalLanguageName || subjectData.originalLanguage)
+    });
+  const parentExplicitOriginal = /^(original|original audio)$/i.test(parentLanguage);
 
   const output = [{
     id: String(originalSubjectId),
-    language: original && (original.lanName || original.language || original.lan) ||
-      subjectData.originalLanguageName || subjectData.originalLanguage || 'Original Audio',
+    language: parentLanguage,
+    sourceLabel: parentLanguage ? 'MovieBox ' + parentLanguage + ' Audio' : '',
     detailPath: '',
-    isOriginal: true
+    isOriginal: parentExplicitOriginal
   }];
 
   dubs.forEach(function (dub) {
     const id = dub && (dub.subjectId || dub.subject_id || dub.id);
     if (!id || String(id) === String(originalSubjectId)) return;
+    const language = dubLanguageOf(dub);
     output.push({
       id: String(id),
-      language: dub.lanName || dub.language || dub.lan || 'Unknown',
+      language: language,
+      sourceLabel: language ? 'MovieBox ' + language + ' Audio' : '',
       detailPath: dub.detailPath || dub.detail_path || '',
-      isOriginal: false
+      isOriginal: /^(original|original audio)$/i.test(language)
     });
   });
 
@@ -612,7 +632,7 @@ function getDubs(subjectData, originalSubjectId) {
     if (seen.has(item.id)) return false;
     seen.add(item.id);
     return true;
-  }).slice(0, 16);
+  });
 }
 
 function formatOfUrl(url, declared) {
@@ -1146,9 +1166,17 @@ function buildResult(stream, variant, subjectData, meta, mediaType, season, epis
   const title = mediaType === 'movie'
     ? contentTitle
     : contentTitle + ' - S' + String(season).padStart(2, '0') + 'E' + String(episode).padStart(2, '0');
-  const suffix = audioDisplay === 'Não identificado' ? '' : ' • ' + audioDisplay;
-  const name = '[Hikari] ' + quality + ' • ' + PROVIDER_NAME + suffix;
-  const languageText = 'Áudio: ' + audioDisplay + (subs ? ' | Legendas: ' + subs : '');
+  const name = '[Hikari] ' + quality + ' • ' + PROVIDER_NAME;
+  const sourceLabel = variant && variant.sourceLabel
+    ? variant.sourceLabel
+    : (audioDisplay === 'Áudio original' ? 'MovieBox Original Audio' :
+      (audioDisplay !== 'Não identificado' ? 'MovieBox ' + audioDisplay + ' Audio' : 'MovieBox áudio não identificado'));
+  const manifestAudio = collectAudioLanguages(stream, '', null);
+  const manifestAudioText = manifestAudio.length
+    ? summarizeLanguages(manifestAudio, 4)
+    : 'Não identificado';
+  const languageText = '| ' + sourceLabel + '\nAudio: ' + manifestAudioText +
+    (subs ? ' | Subs: ' + subs : '');
   const headers = buildPlaybackHeaders(
     Object.assign({}, stream, { signCookie: signCookie }),
     mode,
@@ -1229,7 +1257,7 @@ async function getMobileStreams(meta, mediaType, season, episode, titles) {
       console.log('[' + PROVIDER_NAME + '] detalhes falharam: ' + (error.message || error));
     }
 
-    const variants = getDubs(subjectData || {}, originalId);
+    const variants = getDubs(subjectData || {}, originalId, matches[i]);
     const variantResults = await Promise.all(variants.map(function (variant) {
       return getMobileVariantStreams(variant, meta, mediaType, season, episode)
         .catch(function (error) {
@@ -1345,10 +1373,6 @@ async function h5Search(keyword, mediaType) {
       console.log('[' + PROVIDER_NAME + '] busca Web Player falhou: ' + (error.message || error));
     }
 
-    const matching = pooled.filter(function (item) {
-      return h5Matches(item, currentH5Meta, currentH5MediaType, currentH5Titles);
-    });
-    if (matching.length >= 2) break;
   }
 
   return pooled;
@@ -1445,14 +1469,13 @@ async function getH5Streams(meta, mediaType, season, episode, titles) {
 
   await bootstrapH5Token();
   const pooled = [];
-  const queries = titles.slice(0, 3);
+  const queries = titles;
 
   for (let i = 0; i < queries.length; i++) {
     const items = await h5Search(queries[i], mediaType);
     items.forEach(function (item) {
       if (h5Matches(item, meta, mediaType, titles)) pooled.push(item);
     });
-    if (pooled.length >= 3) break;
   }
 
   const subjects = [];
@@ -1468,7 +1491,7 @@ async function getH5Streams(meta, mediaType, season, episode, titles) {
   });
 
   if (!subjects.length) return [];
-  const selected = subjects.slice(0, 4);
+  const selected = subjects;
   const groups = await Promise.all(selected.map(function (subject) {
     return playH5Subject(subject, meta, mediaType, season, episode)
       .catch(function (error) {
@@ -1546,7 +1569,7 @@ async function getStreams(tmdbId, mediaType, seasonNum, episodeNum) {
       return resultLanguagePriority(a) - resultLanguagePriority(b);
     });
 
-    return merged.slice(0, 50);
+    return merged.slice(0, 100);
   } catch (error) {
     console.log('[' + PROVIDER_NAME + '] ' + (error.message || error));
     return [];
