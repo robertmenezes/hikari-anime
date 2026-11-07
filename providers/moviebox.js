@@ -451,15 +451,9 @@ function titleScore(candidateTitle, targets) {
   targets.forEach(function (target) {
     const normalized = normalizeTitle(target);
     if (!normalized) return;
-    if (candidate === normalized) best = Math.max(best, 100);
-    else if (candidate.includes(normalized) || normalized.includes(candidate)) best = Math.max(best, 82);
-    else {
-      const left = candidate.split(' ');
-      const right = normalized.split(' ');
-      const overlap = left.filter(function (word) { return right.includes(word); }).length;
-      const ratio = overlap / Math.max(left.length, right.length);
-      if (ratio >= 0.8) best = Math.max(best, Math.round(ratio * 75));
-    }
+    // Exact normalized title matching avoids accepting unrelated results
+    // that merely contain the requested series title as part of a longer title.
+    if (candidate === normalized) best = 100;
   });
   return best;
 }
@@ -597,8 +591,7 @@ function dubRawLabel(dub) {
     dub.sourceName || dub.source_name || dub.audioName || dub.audio_name ||
     dub.dubName || dub.dub_name || dub.lanName || dub.languageName ||
     dub.audioLanguageName || dub.audio_language_name || dub.audioLanguage ||
-    dub.audio_language || dub.language || dub.lan || dub.lang ||
-    dub.name || dub.title || ''
+    dub.audio_language || dub.language || dub.lan || dub.lang || ''
   ).trim();
 }
 
