@@ -1,6 +1,6 @@
 {
   "name": "Hikari Anime",
-  "version": "0.2.15",
+  "version": "0.2.16",
   "description": "AniZone, Berry Animes e Tomato para Nuvio, com cartões Hikari compactos e idiomas priorizados para o público latino.",
   "author": "robertmenezes",
   "scrapers": [
@@ -30,7 +30,7 @@
       "id": "berryanimes",
       "name": "Berry Animes",
       "description": "Anime (séries) • Somente 1080p • Multiáudio e legendas externas quando disponíveis.",
-      "version": "0.1.9",
+      "version": "0.1.10",
       "filename": "providers/berryanimes.js",
       "supportedTypes": [
         "tv"
