@@ -1,14 +1,14 @@
 {
   "name": "Hikari Anime",
-  "version": "0.2.12",
-  "description": "AniZone e Tomato para Nuvio, preservando os scrapers originais e filtrando os resultados para 1080p.",
+  "version": "0.2.13",
+  "description": "AniZone, Berry Animes e Tomato para Nuvio, com filtro de 1080p e cartões Hikari compactos.",
   "author": "robertmenezes",
   "scrapers": [
     {
       "id": "anizone",
       "name": "AniZone",
       "description": "Anime (séries e filmes) • Somente 1080p com áudio ou legenda identificada em português.",
-      "version": "0.2.12",
+      "version": "0.2.13",
       "filename": "providers/anizone.js",
       "supportedTypes": [
         "movie",
@@ -46,6 +46,27 @@
       ],
       "hasSettings": true,
       "supportsExternalPlayer": true
+    },
+    {
+      "id": "berryanimes",
+      "name": "Berry Animes",
+      "description": "Anime (séries) • Somente 1080p • Multiáudio e legendas externas quando disponíveis.",
+      "version": "0.1.7",
+      "filename": "providers/berryanimes.js",
+      "supportedTypes": [
+        "tv"
+      ],
+      "enabled": true,
+      "contentLanguage": [
+        "pt-BR",
+        "ja",
+        "en"
+      ],
+      "formats": [
+        "hls"
+      ],
+      "hasSettings": true,
+      "supportsExternalPlayer": false
     }
   ]
 }
