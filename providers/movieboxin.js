@@ -420,7 +420,7 @@ function normalizeTitle(value) {
   return text.toLowerCase()
     .replace(/\[[^\]]*\]/g, ' ')
     .replace(/\((?:19|20)\d{2}\)/g, ' ')
-    .replace(/\s+(?:s\d{1,2}(?:e\d{1,3})?|s\d{1,2}\s*-\s*s?\d{1,2}|season\s+\d+(?:\s+episode\s+\d+)?)$/i, ' ')
+    .replace(/[\s-]+(?:s\d{1,2}(?:e\d{1,3})?|s\d{1,2}\s*-\s*s?\d{1,2}|season\s+\d+(?:\s+episode\s+\d+)?)$/i, ' ')
     .replace(/\b(?:dubbed|dub|subbed|dual audio|4k|uhd|hd)\b/g, ' ')
     .replace(/[^\w\u3400-\u9fff\uac00-\ud7af]+/g, ' ')
     .replace(/\s+/g, ' ')
