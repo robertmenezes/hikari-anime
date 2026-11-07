@@ -1118,12 +1118,11 @@ function buildPlaybackHeaders(stream, mode, route) {
   }
 
   const cookie = stream && (stream.signCookie || stream.sign_cookie || stream.cookie);
-  // MovieBox expects the signed token header as well as Cookie.
-  const headerKey = stream && (stream.signHeaderKey || stream.sign_header_key) || 'X-MB-Token';
-  if (cookie) {
-    headers[headerKey] = String(cookie);
-    headers.Cookie = String(cookie);
-  }
+  // signCookie is a cookie value, not automatically an X-MB-Token.
+  // Send a separate signing header only when the API explicitly names it.
+  const headerKey = stream && (stream.signHeaderKey || stream.sign_header_key);
+  if (cookie) headers.Cookie = String(cookie);
+  if (headerKey && cookie) headers[String(headerKey)] = String(cookie);
 
   if (stream && stream.headers && typeof stream.headers === 'object') {
     Object.keys(stream.headers).forEach(function (key) {
@@ -1248,11 +1247,9 @@ async function getMobileVariantStreams(variant, meta, mediaType, season, episode
   // The subject detail response carries the Web Player route used to mint
   // signed CDN URLs. Reuse it for playback instead of sending an API-only
   // Referer, which can leave otherwise valid movie streams buffering.
-  const mobileRoute = h5RouteFromItem(subjectData || {}) || {
-    origin: H5_ORIGIN,
-    detailPath: '',
-    subjectId: variant.id
-  };
+  const mobileRoute = h5RouteFromItem(subjectData || {});
+  const playbackMode = mobileRoute ? 'h5' : 'mobile';
+  const playbackRoute = mobileRoute || { origin: API_HOSTS[0], detailPath: '', subjectId: variant.id };
   const results = await Promise.all(streams.map(async function (stream) {
     const streamId = streamIdOf(stream, variant.id + '|' + season + '|' + episode);
     const captions = await getExternalCaptions(variant.id, streamId, episode);
@@ -1264,8 +1261,8 @@ async function getMobileVariantStreams(variant, meta, mediaType, season, episode
       mediaType,
       season,
       episode,
-      'h5',
-      mobileRoute,
+      playbackMode,
+      playbackRoute,
       captions
     );
   }));
