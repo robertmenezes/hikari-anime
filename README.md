@@ -44,7 +44,7 @@ Os idiomas são priorizados para o público latino-americano:
 ## Berry Animes
 
 - Provider para séries, baseado no scraper do Kamirama.
-- O manifesto HLS é analisado separando faixas de áudio e legendas.
+- O manifesto HLS é analisado separando faixas de áudio e legendas, reconhecendo códigos ISO 639-1 e ISO 639-2/3 (por exemplo, `ja`/`jpn`, `pt`/`por` e `es`/`spa`).
 - As legendas externas fornecidas pela fonte são repassadas ao Nuvio.
 - A fonte utiliza uma sessão de projeto incorporada ao scraper de origem. Se a fonte começar a responder com HTTP 401/403, pode ser necessário atualizar essa sessão a partir do projeto upstream.
 - A reprodução é HLS; a compatibilidade com players externos não é anunciada pelo provider.
