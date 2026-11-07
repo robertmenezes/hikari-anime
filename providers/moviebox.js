@@ -580,18 +580,31 @@ async function getMobileSubjectDetails(subjectId) {
   return getSubjectData(response);
 }
 
-function dubLanguageOf(dub) {
+function dubRawLabel(dub) {
   if (!dub || typeof dub !== 'object') return '';
-  const raw = String(
-    dub.lanName || dub.language || dub.lan || dub.audioName || dub.audio_name ||
-    dub.dubName || dub.dub_name || dub.name || dub.title || ''
+  return String(
+    dub.sourceName || dub.source_name || dub.audioName || dub.audio_name ||
+    dub.dubName || dub.dub_name || dub.lanName || dub.language || dub.lan ||
+    dub.name || dub.title || ''
   ).trim();
+}
+
+function dubLanguageOf(dub) {
+  const raw = dubRawLabel(dub);
   if (!raw) return '';
-  const key = raw.toLowerCase().replace(/[_\s-]+/g, '');
+  let candidate = raw.replace(/^.*?moviebox\s+/i, '').replace(/\s+audio\s*$/i, '').trim();
+  const key = candidate.toLowerCase().replace(/[_\s-]+/g, '');
   if (/^(ptbr|porbr|brazilianportuguese|portuguesebrazil)$/.test(key)) return 'pt-BR';
   if (/^(esla|es419|latinspanish|spanishlatinamerica)$/.test(key)) return 'es-419';
   if (/^(original|originalaudio)$/.test(key)) return 'Original Audio';
-  return raw;
+  return candidate;
+}
+
+function dubSourceLabel(dub, language) {
+  const raw = dubRawLabel(dub);
+  if (/moviebox/i.test(raw)) return raw;
+  if (/\baudio\s*$/i.test(raw)) return 'MovieBox ' + raw;
+  return language ? 'MovieBox ' + language + ' Audio' : '';
 }
 
 function getDubs(subjectData, originalSubjectId, originalSubject) {
@@ -609,7 +622,7 @@ function getDubs(subjectData, originalSubjectId, originalSubject) {
   const output = [{
     id: String(originalSubjectId),
     language: parentLanguage,
-    sourceLabel: parentLanguage ? 'MovieBox ' + parentLanguage + ' Audio' : '',
+    sourceLabel: dubSourceLabel(original || originalSubject, parentLanguage),
     detailPath: '',
     isOriginal: parentExplicitOriginal
   }];
@@ -621,7 +634,7 @@ function getDubs(subjectData, originalSubjectId, originalSubject) {
     output.push({
       id: String(id),
       language: language,
-      sourceLabel: language ? 'MovieBox ' + language + ' Audio' : '',
+      sourceLabel: dubSourceLabel(dub, language),
       detailPath: dub.detailPath || dub.detail_path || '',
       isOriginal: /^(original|original audio)$/i.test(language)
     });
