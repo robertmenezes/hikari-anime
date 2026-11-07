@@ -595,7 +595,9 @@ function dubRawLabel(dub) {
   if (!dub || typeof dub !== 'object') return '';
   return String(
     dub.sourceName || dub.source_name || dub.audioName || dub.audio_name ||
-    dub.dubName || dub.dub_name || dub.lanName || dub.language || dub.lan ||
+    dub.dubName || dub.dub_name || dub.lanName || dub.languageName ||
+    dub.audioLanguageName || dub.audio_language_name || dub.audioLanguage ||
+    dub.audio_language || dub.language || dub.lan || dub.lang ||
     dub.name || dub.title || ''
   ).trim();
 }
@@ -1199,19 +1201,26 @@ function buildResult(stream, variant, subjectData, meta, mediaType, season, epis
   const manifestAudioText = manifestAudio.length
     ? summarizeLanguages(manifestAudio, 4)
     : 'Não identificado';
-  const languageText = '| ' + sourceLabel + '\nAudio: ' + manifestAudioText +
-    (subs ? ' | Subs: ' + subs : '');
+  // MovieBox subjects/dubs represent separate language sources, not multi-audio tracks.
+  // Prefer the source variant label over a container manifest that may report "Multi".
+  const audioDescription = audio !== 'Não identificado' ? audio : manifestAudioText;
+  const languageText = '| ' + (sourceLabel || (audio !== 'Não identificado'
+    ? 'MovieBox ' + audio + ' Audio'
+    : 'MovieBox áudio não identificado')) +
+    '\nAudio: ' + audioDescription + (subs ? ' | Subs: ' + subs : '');
   const headers = buildPlaybackHeaders(
     Object.assign({}, stream, { signCookie: signCookie }),
     mode,
     Object.assign({}, route || {}, { subjectId: variant && variant.id })
   );
 
+  const bitrate = stream.bitrate || stream.bitRate || stream.bandwidthText || '';
   return {
     name: name,
     title: title,
     url: finalUrl,
     quality: quality,
+    size: bitrate ? String(bitrate) : undefined,
     language: languageText,
     provider: PROVIDER_NAME,
     type: streamFormat === 'direct' ? undefined : streamFormat,
@@ -1466,12 +1475,14 @@ async function playH5Subject(subject, meta, mediaType, season, episode) {
     } catch (_) {}
   }
 
-  const candidateLanguage = subject.language || subject.lanName || subject.lang ||
-    subject.audioLanguage || subject.audio_language || subject.dubName || subject.dub_name || '';
-  const isOriginal = /^(original|original audio)$/i.test(String(candidateLanguage || '').trim());
+  const candidateLanguage = dubRawLabel(subject) ||
+    subject.originalLanguageName || subject.originalLanguage || '';
+  const normalizedCandidate = dubLanguageOf({ language: candidateLanguage }) || candidateLanguage;
+  const isOriginal = /^(original|original audio)$/i.test(String(normalizedCandidate || '').trim());
   const variant = {
     id: subjectId,
-    language: candidateLanguage,
+    language: normalizedCandidate,
+    sourceLabel: dubSourceLabel(subject, normalizedCandidate),
     isOriginal: isOriginal
   };
   const results = streams.map(function (stream) {
