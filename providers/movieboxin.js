@@ -1332,7 +1332,7 @@ function h5RouteFromItem(item) {
 }
 
 function h5BaseTitle(value) {
-  return String(value || '').split('[')[0].trim().replace(/\s+(?:S\d{1,2}(?:E\d{1,3})?|S\d{1,2}\s*-\s*S?\d{1,2}|Season\s+\d+(?:\s+Episode\s+\d+)?)$/i, '');
+  return String(value || '').split('[')[0].trim().replace(/\s*(?:-\s*)?(?:S\d{1,2}(?:E\d{1,3})?|S\d{1,2}\s*-\s*S?\d{1,2}|Season\s+\d+(?:\s+Episode\s+\d+)?)$/i, '').trim();
 }
 
 function h5ItemSeason(item) {
